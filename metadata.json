@@ -1,0 +1,6 @@
+{
+  "name": "LovePlay",
+  "description": "Application web privée et romantique pour les couples à distance — jeux à deux, messagerie intime et souvenirs partagés.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

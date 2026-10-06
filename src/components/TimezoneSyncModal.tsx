@@ -32,7 +32,7 @@ export const TimezoneSyncModal: React.FC<TimezoneSyncModalProps> = ({
     }
   };
 
-  // Time difference in hours
+  // Time difference in hours (Partner 2 relative to Partner 1)
   const getTimeDiffHours = () => {
     try {
       const now = new Date();
@@ -52,9 +52,12 @@ export const TimezoneSyncModal: React.FC<TimezoneSyncModalProps> = ({
         }).format(now),
         10
       );
-      return p1 - p2;
+      let diff = p2 - p1;
+      if (diff > 12) diff -= 24;
+      if (diff < -12) diff += 24;
+      return diff;
     } catch {
-      return 6; // Paris vs Montreal ~6h
+      return 2; // Paris is +2h ahead of Ouagadougou in summer / +1h in winter
     }
   };
 
@@ -68,7 +71,7 @@ export const TimezoneSyncModal: React.FC<TimezoneSyncModalProps> = ({
     }
   }, [isOpen]);
 
-  const selectedP2Hour = (selectedP1Hour - timeDiff + 24) % 24;
+  const selectedP2Hour = (selectedP1Hour + timeDiff + 24) % 24;
 
   const getActivityType = (hour: number): { label: string; icon: React.ReactNode; color: string } => {
     if (hour >= 0 && hour < 7) {
@@ -206,8 +209,8 @@ export const TimezoneSyncModal: React.FC<TimezoneSyncModalProps> = ({
             </div>
             <div className="text-[11px] opacity-80 mt-0.5">
               {isIdealWindow
-                ? `Vous êtes tous les deux réveillés et disponibles.`
-                : `Décalage de ${timeDiff} heures entre vous.`}
+                ? `Vous êtes tous les deux réveillés et disponibles (seulement ${Math.abs(timeDiff)}h de décalage entre le Burkina et la France !).`
+                : `Décalage de ${Math.abs(timeDiff)} heure${Math.abs(timeDiff) > 1 ? 's' : ''} (${timeDiff > 0 ? `${space.partner2.name} a ${timeDiff}h d'avance en France` : timeDiff < 0 ? `${space.partner1.name} a ${Math.abs(timeDiff)}h d'avance au Burkina` : 'même fuseau'}).`}
             </div>
           </div>
         </div>

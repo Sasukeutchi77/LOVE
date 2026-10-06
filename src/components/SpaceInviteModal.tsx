@@ -81,19 +81,45 @@ export const SpaceInviteModal: React.FC<SpaceInviteModalProps> = ({
   const handleSaveProfiles = (e: React.FormEvent) => {
     e.preventDefault();
     sound.playTap();
+
+    const p1CityClean = p1City.trim() || space.partner1.city;
+    const p2CityClean = p2City.trim() || space.partner2.city;
+
+    // Detect appropriate timezones
+    const p1Timezone =
+      p1CityClean.toLowerCase().includes('burkina') || p1CityClean.toLowerCase().includes('ouaga')
+        ? 'Africa/Ouagadougou'
+        : p1CityClean.toLowerCase().includes('france') || p1CityClean.toLowerCase().includes('paris')
+        ? 'Europe/Paris'
+        : space.partner1.timezone;
+
+    const p2Timezone =
+      p2CityClean.toLowerCase().includes('france') || p2CityClean.toLowerCase().includes('paris')
+        ? 'Europe/Paris'
+        : p2CityClean.toLowerCase().includes('burkina') || p2CityClean.toLowerCase().includes('ouaga')
+        ? 'Africa/Ouagadougou'
+        : space.partner2.timezone;
+
+    const isBurkinaFrance =
+      (p1Timezone === 'Africa/Ouagadougou' && p2Timezone === 'Europe/Paris') ||
+      (p2Timezone === 'Africa/Ouagadougou' && p1Timezone === 'Europe/Paris');
+
     const updated: CoupleSpace = {
       ...space,
+      distanceKm: isBurkinaFrance ? 4070 : space.distanceKm,
       nextReunionDate: reunionDate,
       partner1: {
         ...space.partner1,
         name: p1Name.trim() || space.partner1.name,
-        city: p1City.trim() || space.partner1.city,
+        city: p1CityClean,
+        timezone: p1Timezone,
         status: p1Status.trim() || space.partner1.status,
       },
       partner2: {
         ...space.partner2,
         name: p2Name.trim() || space.partner2.name,
-        city: p2City.trim() || space.partner2.city,
+        city: p2CityClean,
+        timezone: p2Timezone,
         status: p2Status.trim() || space.partner2.status,
       },
     };
@@ -256,7 +282,7 @@ export const SpaceInviteModal: React.FC<SpaceInviteModalProps> = ({
                 value={p1City}
                 onChange={(e) => setP1City(e.target.value)}
                 className="w-full mt-1.5 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.08] text-[11px] text-white/70 focus:outline-none focus:border-rose-400"
-                placeholder="Ta ville (ex: Paris)"
+                placeholder="Ta ville (ex: Ouagadougou)"
               />
             </div>
 
@@ -274,7 +300,7 @@ export const SpaceInviteModal: React.FC<SpaceInviteModalProps> = ({
                 value={p2City}
                 onChange={(e) => setP2City(e.target.value)}
                 className="w-full mt-1.5 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.08] text-[11px] text-white/70 focus:outline-none focus:border-rose-400"
-                placeholder="Sa ville (ex: Montréal)"
+                placeholder="Sa ville (ex: Paris)"
               />
             </div>
           </div>

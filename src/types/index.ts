@@ -24,7 +24,7 @@ export interface CoupleSpace {
   };
 }
 
-export type TabType = 'home' | 'games' | 'serious' | 'chat' | 'memories';
+export type TabType = 'home' | 'games' | 'gallery' | 'serious' | 'chat' | 'memories';
 
 export type GameId =
   | 'tictactoe'
@@ -105,6 +105,23 @@ export interface MemoryItem {
   note: string;
   imageUrl?: string;
   isFavorite?: boolean;
+}
+
+export type GalleryMediaType = 'photo' | 'video';
+
+export interface GalleryMediaItem {
+  id: string;
+  type: GalleryMediaType;
+  url: string; // Image data URL or video URL/data URL
+  thumbnailUrl?: string;
+  title: string;
+  caption?: string;
+  date: string; // e.g. "2026-10-06"
+  location: string; // e.g. "Ouagadougou", "Paris", "En visio"
+  addedBy: 'partner1' | 'partner2';
+  durationSeconds?: number; // For videos (e.g. 15s)
+  isFavorite?: boolean;
+  category: 'Retrouvailles' | 'Visio & Quotidien' | 'Voyages' | 'Moments tendres' | 'Fous rires';
 }
 
 export interface DailyChallenge {

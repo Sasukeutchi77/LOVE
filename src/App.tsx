@@ -12,6 +12,7 @@ import { DateNightModal } from './components/DateNightModal';
 import { TimezoneSyncModal } from './components/TimezoneSyncModal';
 import { DailyChallengeModal } from './components/DailyChallengeModal';
 import { SeriousSection } from './components/SeriousSection';
+import { GallerySection } from './components/GallerySection';
 import { CoupleSpace, TabType } from './types';
 import { StorageService } from './services/storage';
 import { sound } from './services/sound';
@@ -120,6 +121,10 @@ export default function App() {
 
         {activeTab === 'games' && (
           <GamesSection space={space} activeUserId={activeUserId} />
+        )}
+
+        {activeTab === 'gallery' && (
+          <GallerySection space={space} activeUserId={activeUserId} />
         )}
 
         {activeTab === 'serious' && (

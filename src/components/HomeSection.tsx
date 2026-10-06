@@ -22,6 +22,7 @@ import {
   CheckCircle2,
   ChevronRight,
   Target,
+  Images,
 } from 'lucide-react';
 import { CoupleSpace, TabType, DailyChallengeState } from '../types';
 import { StorageService } from '../services/storage';
@@ -247,7 +248,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
             {getGreeting()}
           </h1>
           <p className="text-xs sm:text-sm text-white/70 max-w-md font-light leading-relaxed mb-6">
-            Même à <span className="text-rose-300 font-medium">{space.distanceKm.toLocaleString('fr-FR')} km</span> de distance, chaque seconde, chaque jeu et chaque rire nous rapproche un peu plus.
+            Entre le Burkina Faso et la France, même à <span className="text-rose-300 font-medium">{space.distanceKm.toLocaleString('fr-FR')} km</span> de distance, chaque seconde, chaque jeu et chaque rire nous rapproche un peu plus.
           </p>
 
           {/* Primary CTA: « Retrouver mon amour » */}
@@ -659,7 +660,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
           <span className="text-[11px] text-rose-300/80">À deux en direct</span>
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <button
             onClick={() => onNavigate('games')}
             className="p-4 rounded-2xl bg-[#141026] hover:bg-[#1a1433] border border-white/[0.06] hover:border-rose-400/20 text-left transition-all group"
@@ -668,7 +669,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
               <Gamepad2 className="w-4 h-4" />
             </div>
             <div className="font-medium text-xs text-white group-hover:text-rose-200 transition-colors">
-              9 Jeux à deux
+              9 Jeux complices
             </div>
             <div className="text-[11px] text-white/50 mt-0.5">
               Ocho, Morpion, Quiz, Roue...
@@ -676,10 +677,25 @@ export const HomeSection: React.FC<HomeSectionProps> = ({
           </button>
 
           <button
-            onClick={() => onNavigate('chat')}
+            onClick={() => onNavigate('gallery')}
             className="p-4 rounded-2xl bg-[#141026] hover:bg-[#1a1433] border border-white/[0.06] hover:border-rose-400/20 text-left transition-all group"
           >
             <div className="w-8 h-8 rounded-xl bg-rose-500/15 flex items-center justify-center text-rose-300 mb-3 group-hover:scale-105 transition-transform">
+              <Images className="w-4 h-4" />
+            </div>
+            <div className="font-medium text-xs text-white group-hover:text-rose-200 transition-colors">
+              Galerie Média
+            </div>
+            <div className="text-[11px] text-white/50 mt-0.5">
+              Photos & vidéos avec grille
+            </div>
+          </button>
+
+          <button
+            onClick={() => onNavigate('chat')}
+            className="p-4 rounded-2xl bg-[#141026] hover:bg-[#1a1433] border border-white/[0.06] hover:border-rose-400/20 text-left transition-all group"
+          >
+            <div className="w-8 h-8 rounded-xl bg-indigo-500/15 flex items-center justify-center text-indigo-300 mb-3 group-hover:scale-105 transition-transform">
               <MessageCircleHeart className="w-4 h-4" />
             </div>
             <div className="font-medium text-xs text-white group-hover:text-rose-200 transition-colors">

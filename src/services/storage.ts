@@ -12,6 +12,7 @@ import {
   PactRule,
   DeepLetter,
   OchoGameState,
+  GalleryMediaItem,
 } from '../types';
 
 /**
@@ -42,6 +43,7 @@ const STORAGE_KEY_CHECKINS = 'loveplay_checkins_v1';
 const STORAGE_KEY_PACT = 'loveplay_pact_v1';
 const STORAGE_KEY_LETTERS = 'loveplay_letters_v1';
 const STORAGE_KEY_OCHO = 'loveplay_ocho_v1';
+const STORAGE_KEY_GALLERY = 'loveplay_gallery_v1';
 
 export const ROMANTIC_DAILY_CHALLENGES: Omit<DailyChallenge, 'dateKey' | 'partner1Done' | 'partner2Done'>[] = [
   {
@@ -135,26 +137,26 @@ const DEFAULT_SPACE: CoupleSpace = {
   code: 'LOVE-7842',
   establishedDate: '2023-09-14',
   nextReunionDate: '2026-10-18', // In 2 weeks!
-  distanceKm: 5850, // Paris <-> Montréal
+  distanceKm: 4070, // Burkina Faso <-> France
   partner1: {
     id: 'partner1',
-    name: 'Camille',
-    city: 'Paris',
-    timezone: 'Europe/Paris',
+    name: 'Moi',
+    city: 'Ouagadougou (Burkina Faso)',
+    timezone: 'Africa/Ouagadougou',
     avatarSeed: 'rose',
-    status: 'Pense à toi ✨',
+    status: 'Pense fort à toi depuis le Burkina 🇧🇫✨',
     lastActive: 'À l’instant',
-    battery: 88,
+    battery: 92,
   },
   partner2: {
     id: 'partner2',
-    name: 'Léo',
-    city: 'Montréal',
-    timezone: 'America/Toronto',
+    name: 'Mon amour',
+    city: 'Paris (France)',
+    timezone: 'Europe/Paris',
     avatarSeed: 'violet',
-    status: 'Au café avec son ordi ☕',
-    lastActive: 'Il y a 3 min',
-    battery: 74,
+    status: 'Pense à toi depuis la France 🇫🇷💖',
+    lastActive: 'Il y a 2 min',
+    battery: 84,
   },
 };
 
@@ -275,8 +277,61 @@ const DEFAULT_MEMORIES: MemoryItem[] = [
     id: 'mem3',
     title: 'Soirée film sous nos plaids à distance',
     date: '12 Décembre 2024',
-    location: 'Appel vidéo Paris & Montréal',
+    location: 'Appel vidéo Ouagadougou & Paris',
     note: 'On a lancé le film exactement à la même seconde. Tu t’es endormie avec la caméra allumée, le plus doux des spectacles.',
+  },
+];
+
+export const DEFAULT_GALLERY_MEDIA: GalleryMediaItem[] = [
+  {
+    id: 'gal_1',
+    type: 'photo',
+    url: '/src/assets/images/loveplay_couple_art_1791120151244.jpg',
+    title: 'Notre premier regard complice',
+    caption: 'Ce moment magique où tout s’est éclairé dans nos yeux.',
+    date: '14 Septembre 2024',
+    location: 'Paris, France',
+    addedBy: 'partner2',
+    isFavorite: true,
+    category: 'Retrouvailles',
+  },
+  {
+    id: 'gal_2',
+    type: 'video',
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+    title: 'Un mot doux en direct pour toi 🎥',
+    caption: 'Un bisou volé et un sourire envoyé à travers les kilomètres avant d’aller dormir.',
+    date: '2 Octobre 2026',
+    location: 'Appel Visio Ouagadougou 🇧🇫 & Paris 🇫🇷',
+    addedBy: 'partner1',
+    durationSeconds: 15,
+    isFavorite: true,
+    category: 'Visio & Quotidien',
+  },
+  {
+    id: 'gal_3',
+    type: 'photo',
+    url: '/src/assets/images/loveplay_memory_sunset_1791120165978.jpg',
+    title: 'Sous le même coucher de soleil 🌅',
+    caption: '4 070 km entre le Burkina et la France, mais le même ciel chaleureux.',
+    date: '28 Septembre 2026',
+    location: 'Ouagadougou, Burkina Faso',
+    addedBy: 'partner1',
+    isFavorite: true,
+    category: 'Moments tendres',
+  },
+  {
+    id: 'gal_4',
+    type: 'video',
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+    title: 'Balade en pensant à nous 🌿',
+    caption: 'Je t’emmène avec moi dans chaque ruelle de ma journée.',
+    date: '1 Octobre 2026',
+    location: 'Paris, France',
+    addedBy: 'partner2',
+    durationSeconds: 15,
+    isFavorite: false,
+    category: 'Visio & Quotidien',
   },
 ];
 
@@ -341,7 +396,24 @@ export const StorageService = {
   getSpace(): CoupleSpace {
     try {
       const data = localStorage.getItem(STORAGE_KEY_SPACE);
-      if (data) return JSON.parse(data);
+      if (data) {
+        const parsed: CoupleSpace = JSON.parse(data);
+        // If the space is still on previous demo cities (Montréal, etc.), migrate to Burkina Faso & France
+        if (
+          parsed.partner2?.timezone === 'America/Toronto' ||
+          parsed.partner2?.city?.includes('Montréal') ||
+          (parsed.partner1?.city === 'Paris' && parsed.partner2?.city === 'Montréal') ||
+          parsed.distanceKm === 5850
+        ) {
+          parsed.partner1.city = 'Ouagadougou (Burkina Faso)';
+          parsed.partner1.timezone = 'Africa/Ouagadougou';
+          parsed.partner2.city = 'Paris (France)';
+          parsed.partner2.timezone = 'Europe/Paris';
+          parsed.distanceKm = 4070;
+          this.saveSpace(parsed);
+        }
+        return parsed;
+      }
     } catch {
       // Fallback
     }
@@ -521,6 +593,53 @@ export const StorageService = {
     return memories;
   },
 
+  // ==========================================
+  // GALLERY (PHOTOS & VIDEOS)
+  // ==========================================
+  getGalleryMedia(): GalleryMediaItem[] {
+    try {
+      const data = localStorage.getItem(STORAGE_KEY_GALLERY);
+      if (data) return JSON.parse(data);
+    } catch {
+      // Fallback
+    }
+    return DEFAULT_GALLERY_MEDIA;
+  },
+
+  saveGalleryMedia(items: GalleryMediaItem[]) {
+    try {
+      localStorage.setItem(STORAGE_KEY_GALLERY, JSON.stringify(items));
+      this.broadcast('GALLERY_UPDATED', items);
+    } catch {
+      // Ignore
+    }
+  },
+
+  addGalleryMedia(media: Omit<GalleryMediaItem, 'id'>): GalleryMediaItem {
+    const items = this.getGalleryMedia();
+    const newItem: GalleryMediaItem = {
+      ...media,
+      id: 'gal_' + Date.now(),
+    };
+    const updated = [newItem, ...items];
+    this.saveGalleryMedia(updated);
+    return newItem;
+  },
+
+  toggleFavoriteGalleryMedia(id: string): GalleryMediaItem[] {
+    const items = this.getGalleryMedia().map((item) =>
+      item.id === id ? { ...item, isFavorite: !item.isFavorite } : item
+    );
+    this.saveGalleryMedia(items);
+    return items;
+  },
+
+  deleteGalleryMedia(id: string): GalleryMediaItem[] {
+    const items = this.getGalleryMedia().filter((item) => item.id !== id);
+    this.saveGalleryMedia(items);
+    return items;
+  },
+
   updateUserStatus(userId: 'partner1' | 'partner2', newStatus: string) {
     const space = this.getSpace();
     if (userId === 'partner1') {
@@ -549,6 +668,7 @@ export const StorageService = {
       if (data.quiz) this.saveQuiz(data.quiz);
       if (data.tictactoe) this.saveTicTacToe(data.tictactoe);
       if (data.connect4) this.saveConnect4(data.connect4);
+      if (data.galleryMedia) this.saveGalleryMedia(data.galleryMedia);
       return true;
     } catch {
       return false;
@@ -743,6 +863,7 @@ export const StorageService = {
       pactRules: this.getPactRules(),
       checkIns: this.getCheckIns(),
       letters: this.getDeepLetters(),
+      galleryMedia: this.getGalleryMedia(),
       exportDate: new Date().toISOString(),
     };
     return JSON.stringify(data, null, 2);

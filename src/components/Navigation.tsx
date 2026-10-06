@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Gamepad2, Compass, MessageCircleHeart, Sparkles } from 'lucide-react';
+import { Home, Gamepad2, Compass, MessageCircleHeart, Sparkles, Images } from 'lucide-react';
 import { TabType } from '../types';
 
 interface NavigationProps {
@@ -25,6 +25,11 @@ export const Navigation: React.FC<NavigationProps> = ({
       icon: Gamepad2,
     },
     {
+      id: 'gallery' as TabType,
+      label: 'Galerie',
+      icon: Images,
+    },
+    {
       id: 'serious' as TabType,
       label: 'Avenir',
       icon: Compass,
@@ -45,9 +50,9 @@ export const Navigation: React.FC<NavigationProps> = ({
   return (
     <nav
       aria-label="Navigation principale"
-      className="fixed bottom-0 left-0 right-0 z-40 bg-[#0e0a1a]/92 backdrop-blur-xl border-t border-white/[0.08] pb-safe"
+      className="fixed bottom-0 left-0 right-0 z-40 bg-[#0e0a1a]/95 backdrop-blur-xl border-t border-white/[0.08] pb-safe"
     >
-      <div className="max-w-md mx-auto grid grid-cols-5 items-center h-16 px-1">
+      <div className="max-w-lg mx-auto grid grid-cols-6 items-center h-16 px-1">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -56,7 +61,7 @@ export const Navigation: React.FC<NavigationProps> = ({
             <button
               key={tab.id}
               onClick={() => onSelectTab(tab.id)}
-              className={`relative flex flex-col items-center justify-center min-h-[48px] min-w-[48px] py-1 transition-all duration-200 select-none ${
+              className={`relative flex flex-col items-center justify-center min-h-[48px] py-1 transition-all duration-200 select-none ${
                 isActive
                   ? 'text-rose-400 font-semibold'
                   : 'text-white/45 hover:text-white/70 font-normal'
@@ -64,7 +69,7 @@ export const Navigation: React.FC<NavigationProps> = ({
             >
               <div className="relative">
                 <Icon
-                  className={`w-5 h-5 transition-transform duration-200 ${
+                  className={`w-4.5 h-4.5 sm:w-5 sm:h-5 transition-transform duration-200 ${
                     isActive ? 'scale-110 stroke-[2.2]' : 'scale-100 stroke-[1.8]'
                   }`}
                 />
@@ -75,7 +80,7 @@ export const Navigation: React.FC<NavigationProps> = ({
                 )}
               </div>
               <span
-                className={`text-[11px] tracking-tight mt-1 transition-colors ${
+                className={`text-[10px] sm:text-[11px] tracking-tight mt-1 transition-colors truncate max-w-full px-0.5 ${
                   isActive ? 'text-rose-300' : 'text-white/50'
                 }`}
               >
